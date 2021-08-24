@@ -1,6 +1,6 @@
 generator = {
     SIZE: 8,
-    RESOLUTION: 256, // at least 1024 for good results
+    RESOLUTION: 1024, // at least 1024 for good results
     COLOR_SCALE: 256,
 
     /*
@@ -12,7 +12,8 @@ generator = {
         // return (x < 0.5) ? 2 * x * x : 2 * x * (x - 1) + 1; // not steep enough
 
         // https://www.desmos.com/calculator/pooairmida
-        return (x < 0.5) ? (Math.tanh(6 * x - 3) + 1) / 2 : x;
+        let steepness = 4; // increase for steeper curve (better defined land)
+        return (x < 0.5) ? (Math.tanh(steepness * (2 * x - 1)) + 1) / 2 : x;
     },
 
     /*
