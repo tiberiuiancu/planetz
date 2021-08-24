@@ -1,15 +1,18 @@
 generator = {
     SIZE: 8,
-    RESOLUTION: 512,
+    RESOLUTION: 256, // at least 1024 for good results
     COLOR_SCALE: 256,
 
     /*
      * Non-linearity applied to perlin noise for nicer results
      * Essentially makes higher peaks rarer and watery sections more common
-     * https://www.desmos.com/calculator/irzyfgi4zk
      */
     non_lin: function(x) {
-        return (x < 0.5) ? 2 * x * x : 2 * x * (x - 1) + 1;
+        // https://www.desmos.com/calculator/irzyfgi4zk
+        // return (x < 0.5) ? 2 * x * x : 2 * x * (x - 1) + 1; // not steep enough
+
+        // https://www.desmos.com/calculator/pooairmida
+        return (x < 0.5) ? (Math.tanh(6 * x - 3) + 1) / 2 : x;
     },
 
     /*
