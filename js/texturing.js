@@ -23,8 +23,8 @@ let texturing = {
         flatheightmap.sort();
 
         // top 1% of values are snow
-        const snow_level = flatheightmap[Math.floor(0.995 * flatheightmap.length)];
-        const stone_level = flatheightmap[Math.floor(0.93 * flatheightmap.length)];
+        const snow_level = flatheightmap[Math.floor(0.99 * flatheightmap.length)];
+        const stone_level = flatheightmap[Math.floor(0.97 * flatheightmap.length)];
 
         // first pass: set water in low area,
         // stone and snow in high areas and earth in-between
@@ -45,26 +45,26 @@ let texturing = {
         }
 
         // second pass: add more variety
-        // choose N points on the map. If it lands on either stone or earth
+        // choose N points on the map. If the point is on land,
         // perform a flood fill on the height map with error eps.
-        // change the terrain types of the filled area to another terrain type
-        // according to preset probabilities by elevation
-        const N_POINTS = 100;
+        // change the terrain types of the filled area to either
+        // water or stone, for more variety
+        const N_POINTS = 200;
 
         for (let _ = 0; _ < N_POINTS; ++_) {
             let i = Math.floor(Math.random() * height);
             let j = Math.floor(Math.random() * width);
             // const eps = Math.random() / 25;
-            const eps = 0.005;
+            const eps = 0.002;
 
             if (terrain[i][j] !== this.WATER) {
                 let flooded = this.flood_fill(heightmap, terrain, eps, [i, j]);
-                let change_to = this.SNOW; // todo: change this according to random sampling
+                let change_to = Math.random() < 0.5 ? this.WATER : this.STONE;
 
                 // if we flooded a big enough area, display it
                 if (flooded.length > 10) {
                     for (let i = 0; i < flooded.length; ++i) {
-                        // terrain[flooded[i][0]][flooded[i][1]] = change_to;
+                        terrain[flooded[i][0]][flooded[i][1]] = change_to;
                     }
                 }
             }
@@ -119,8 +119,8 @@ let texturing = {
             max_val = [100,104,69];
             percentile = (altitude - this.earth_height[0]) / (this.earth_height[1] - this.earth_height[0]);
         } else if (terrain_type === this.STONE) {
-            min_val = [100,87,101];
-            max_val = [174,162,153];
+            min_val = [53,72,43];
+            max_val = [158,149,145];
             percentile = (altitude - this.stone_height[0]) / (this.stone_height[1] - this.stone_height[0]);
         } else {
             min_val = [243,221,201];
@@ -129,7 +129,7 @@ let texturing = {
         }
 
         // calculate rgb based on altitude percentile of the terrain type of the cell and add a bit of randomness
-        let rand_scale = 5;
+        let rand_scale = 10;
         let r = Math.floor((max_val[0] - min_val[0]) * percentile + min_val[0] + (Math.random() - 0.5) * rand_scale);
         let g = Math.floor((max_val[1] - min_val[1]) * percentile + min_val[1] + (Math.random() - 0.5) * rand_scale);
         let b = Math.floor((max_val[2] - min_val[2]) * percentile + min_val[2] + (Math.random() - 0.5) * rand_scale);
@@ -175,17 +175,6 @@ let texturing = {
             texture[i] = [];
             for (let j = 0; j < terrain[i].length; ++j) {
                 texture[i][j] = this.get_color(terrain[i][j], heightmap[i][j]);
-
-                // let cell = terrain[i][j];
-                // if (cell === this.SNOW) {
-                //     texture[i][j] = [255, 255, 255];
-                // } else if (cell === this.STONE) {
-                //     texture[i][j] = [25, 25, 25];
-                // } else if (cell === this.EARTH) {
-                //     texture[i][j] = [52, 63, 37];
-                // } else {
-                //     texture[i][j] = [0, 0, 255];
-                // }
             }
         }
 

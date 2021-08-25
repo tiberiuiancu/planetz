@@ -6,7 +6,7 @@ let planetz = {
         this.raw_heightmap = generator.get_height_map();
         this.edge_blurred_heightmap = generator.edge_blur(this.raw_heightmap);
         this.heightmap = utils.pad(
-            this.edge_blurred_heightmap, 15, 0, 0
+            this.edge_blurred_heightmap, 25, 10, 0
         ); // quick fix for the distortion at the poles
         this.heightmap_jpg = utils.buffer_to_jpg(this.heightmap);
         this.terrain = texturing.make_terrain(this.heightmap);
