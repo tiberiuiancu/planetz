@@ -23,7 +23,7 @@ let texturing = {
         flatheightmap.sort();
 
         // top 1% of values are snow
-        const snow_level = flatheightmap[Math.floor(0.99 * flatheightmap.length)];
+        const snow_level = flatheightmap[Math.floor(0.995 * flatheightmap.length)];
         const stone_level = flatheightmap[Math.floor(0.97 * flatheightmap.length)];
 
         // first pass: set water in low area,
@@ -55,11 +55,19 @@ let texturing = {
             let i = Math.floor(Math.random() * height);
             let j = Math.floor(Math.random() * width);
             // const eps = Math.random() / 25;
-            const eps = 0.002;
+            const eps = 0.005;
 
             if (terrain[i][j] !== this.WATER) {
                 let flooded = this.flood_fill(heightmap, terrain, eps, [i, j]);
-                let change_to = Math.random() < 0.5 ? this.WATER : this.STONE;
+                let rand = Math.random();
+                let change_to;
+                if (rand < 0.2) {
+                    change_to = this.SNOW;
+                } else if (rand < 0.6) {
+                    change_to = this.STONE;
+                } else {
+                    change_to = this.WATER;
+                }
 
                 // if we flooded a big enough area, display it
                 if (flooded.length > 10) {
@@ -103,13 +111,14 @@ let texturing = {
 
     /*
      * We calculate the color by assuming the altitudes for each terrain type are evenly distributed
-     * between the calculated minimum and maximum value (which is not exactly the case)
-     *
+     * between the calculated minimum and maximum value (which is not exactly the case but it works pretty well)
+     * Assuming a uniform distribution, we calculate the percentile of the height of the current cell.
+     * Based on the percentile we assign a color that sits in between predefined rgb values (chosen separately
+     * for each terrain type)
      */
     get_color: function(terrain_type, altitude) {
         let min_val, max_val, percentile;
 
-        // todo: put these in constants
         if (terrain_type === this.WATER) {
             min_val = [5,24,55];
             max_val = [20,53,96];
@@ -117,7 +126,7 @@ let texturing = {
         } else if (terrain_type === this.EARTH) {
             min_val = [53,72,43];
             max_val = [100,104,69];
-            percentile = (altitude - this.earth_height[0]) / (this.earth_height[1] - this.earth_height[0]);
+            percentile = (this.earth_height[1] - altitude) / (this.earth_height[1] - this.earth_height[0]);
         } else if (terrain_type === this.STONE) {
             min_val = [53,72,43];
             max_val = [158,149,145];
@@ -125,7 +134,7 @@ let texturing = {
         } else {
             min_val = [243,221,201];
             max_val = [255,240,226];
-            percentile = (altitude - this.snow_height[0]) / (this.snow_height[1] - this.snow_height[0]);
+            percentile = (this.snow_height[1] - altitude) / (this.snow_height[1] - this.snow_height[0]);
         }
 
         // calculate rgb based on altitude percentile of the terrain type of the cell and add a bit of randomness
@@ -138,7 +147,6 @@ let texturing = {
     },
 
     make_texture: function(terrain, heightmap) {
-
         // calculate minimum and maximum height for each terrain type; we will use them when coloring
         this.water_height = [1, 0];
         this.earth_height = [1, 0];
@@ -169,7 +177,7 @@ let texturing = {
             }
         }
 
-
+        // fill texture array
         let texture = [];
         for (let i = 0; i < terrain.length; ++i) {
             texture[i] = [];

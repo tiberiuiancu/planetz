@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PLANETZ!</title>
+</head>
+<body>
+
+</body>
+</html><html>
+<head>
+  <script src='js/perlin.js'></script>
+  <script src='js/utils.js'></script>
+  <script src='js/generation.js'></script>
+  <script src='js/texturing.js'></script>
+  <script src='js/planetz.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+<script>
+  planetz.generate_planet();
+
+  // initialize three.js canvas, renderer, scene and camera
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild( renderer.domElement );
+  camera.position.z = 1;
+  var light = new THREE.DirectionalLight( 0xffffff );
+  light.position.set(0, 1, 1);
+
+  // initialize the sphere, textures and bump map
+  let texture = new THREE.ImageUtils.loadTexture(planetz.texture_jpg);
+  let bump_map = new THREE.ImageUtils.loadTexture(planetz.heightmap_jpg);
+  var geometry = new THREE.SphereGeometry(0.5, 1000, 1000);
+  var material = new THREE.MeshStandardMaterial( { map: texture, bumpMap: bump_map, bumpScale: 0.02 });
+  var earthMesh = new THREE.Mesh(geometry, material);
+  scene.add(light);
+  scene.add(earthMesh);
+
+  // infinite animation function that gets called automatically by the browser
+  const animate = function () {
+    requestAnimationFrame( animate );
+
+    // rotate planet
+    earthMesh.rotation.y += 0.005;
+    earthMesh.rotation.x += 0.005;
+
+    renderer.render( scene, camera );
+  };
+
+  animate();
+
+  let draw_image = function(jpg, width, height) {
+    let canvas = document.createElement('canvas');
+    document.body.append(canvas);
+    canvas.height = height;
+    canvas.width = width;
+    ctx = canvas.getContext('2d');
+    image = new Image();
+    image.onload = function() {
+      ctx.drawImage(image, 0, 0);
+    }
+    image.src = jpg;
+  }
+
+  draw_image(planetz.heightmap_jpg, planetz.heightmap.length, planetz.heightmap[0].length);
+  draw_image(planetz.texture_jpg, planetz.texture.length, planetz.texture[0].length);
+
+</script>
+
+
+<script>
+
+</script>
+
+</body>
+</html>
