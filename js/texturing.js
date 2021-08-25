@@ -44,18 +44,20 @@ let texturing = {
             }
         }
 
+        // calculate min max so the next step doesn't interfere with coloring
+        this.calculate_min_max(terrain, heightmap);
+
         // second pass: add more variety
         // choose N points on the map. If the point is on land,
         // perform a flood fill on the height map with error eps.
         // change the terrain types of the filled area to either
         // water or stone, for more variety
         const N_POINTS = 200;
+        const eps = 0.005;
 
         for (let _ = 0; _ < N_POINTS; ++_) {
             let i = Math.floor(Math.random() * height);
             let j = Math.floor(Math.random() * width);
-            // const eps = Math.random() / 25;
-            const eps = 0.005;
 
             if (terrain[i][j] !== this.WATER) {
                 let flooded = this.flood_fill(heightmap, terrain, eps, [i, j]);
@@ -139,6 +141,8 @@ let texturing = {
 
         // calculate rgb based on altitude percentile of the terrain type of the cell and add a bit of randomness
         let rand_scale = 10;
+        if (percentile < 0) percentile = 0;
+        if (percentile > 1) percentile = 1;
         let r = Math.floor((max_val[0] - min_val[0]) * percentile + min_val[0] + (Math.random() - 0.5) * rand_scale);
         let g = Math.floor((max_val[1] - min_val[1]) * percentile + min_val[1] + (Math.random() - 0.5) * rand_scale);
         let b = Math.floor((max_val[2] - min_val[2]) * percentile + min_val[2] + (Math.random() - 0.5) * rand_scale);
@@ -146,8 +150,10 @@ let texturing = {
         return [r, g, b];
     },
 
-    make_texture: function(terrain, heightmap) {
-        // calculate minimum and maximum height for each terrain type; we will use them when coloring
+    /*
+     * calculate minimum and maximum height for each terrain type; we will use them when coloring
+     */
+    calculate_min_max: function(terrain, heightmap) {
         this.water_height = [1, 0];
         this.earth_height = [1, 0];
         this.stone_height = [1, 0];
@@ -176,7 +182,9 @@ let texturing = {
                 }
             }
         }
+    },
 
+    make_texture: function(terrain, heightmap) {
         // fill texture array
         let texture = [];
         for (let i = 0; i < terrain.length; ++i) {
