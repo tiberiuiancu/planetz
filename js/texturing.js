@@ -53,7 +53,7 @@ let texturing = {
         // change the terrain types of the filled area to either
         // water or stone, for more variety
         const N_POINTS = 200;
-        const eps = 0.005;
+        const eps = 0.002;
 
         for (let _ = 0; _ < N_POINTS; ++_) {
             let i = Math.floor(Math.random() * height);

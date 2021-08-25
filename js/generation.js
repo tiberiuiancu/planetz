@@ -1,6 +1,6 @@
 let generator = {
     SIZE: 8,
-    RESOLUTION: 512, // 1024 for good results
+    RESOLUTION: 1024, // 1024 for good results
 
     /*
      * Non-linearity applied to perlin noise for nicer results
