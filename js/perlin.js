@@ -1,5 +1,5 @@
 /*
- * Adapter after https://github.com/joeiddon/perlin
+ * Adapted after https://github.com/joeiddon/perlin
  */
 
 let perlin = {
@@ -48,9 +48,8 @@ let perlin = {
     },
 
     /*
-     *
      * Amplitudes should be an array of values between 0 and 1, representing
-     * the weight of each each overlayed perlin map.
+     * the weight of each overlayed perlin map.
      */
     getWithOctaves: function(x, y, amplitudes) {
         let total = 0;
