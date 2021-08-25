@@ -3,12 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>PLANETZ!</title>
-</head>
-<body>
 
-</body>
-</html><html>
-<head>
   <script src='js/perlin.js'></script>
   <script src='js/utils.js'></script>
   <script src='js/generation.js'></script>
@@ -17,6 +12,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
+
 <script>
   planetz.generate_planet();
 
@@ -34,7 +30,7 @@
   let texture = new THREE.ImageUtils.loadTexture(planetz.texture_jpg);
   let bump_map = new THREE.ImageUtils.loadTexture(planetz.heightmap_jpg);
   var geometry = new THREE.SphereGeometry(0.5, 1000, 1000);
-  var material = new THREE.MeshStandardMaterial( { map: texture, bumpMap: bump_map, bumpScale: 0.02 });
+  var material = new THREE.MeshStandardMaterial( { map: texture, bumpMap: bump_map, bumpScale: 0.01 });
   var earthMesh = new THREE.Mesh(geometry, material);
   scene.add(light);
   scene.add(earthMesh);
@@ -52,26 +48,22 @@
 
   animate();
 
-  let draw_image = function(jpg, width, height) {
-    let canvas = document.createElement('canvas');
-    document.body.append(canvas);
-    canvas.height = height;
-    canvas.width = width;
-    ctx = canvas.getContext('2d');
-    image = new Image();
-    image.onload = function() {
-      ctx.drawImage(image, 0, 0);
+  let draw_image = function(map, caption) {
+    if (caption !== undefined) {
+      let text = document.createElement('p');
+      text.innerText = caption;
+      document.body.append(text);
     }
-    image.src = jpg;
+
+    let img = document.createElement('img');
+    document.body.append(img);
+    img.src = utils.buffer_to_jpg(map);
+    img.style.height = map.length;
+    img.style.width = map[0].length;
   }
 
-  draw_image(planetz.heightmap_jpg, planetz.heightmap.length, planetz.heightmap[0].length);
-  draw_image(planetz.texture_jpg, planetz.texture.length, planetz.texture[0].length);
-
-</script>
-
-
-<script>
+  draw_image(planetz.heightmap);
+  draw_image(planetz.texture);
 
 </script>
 
