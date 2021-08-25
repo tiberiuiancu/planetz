@@ -10,7 +10,7 @@ let planetz = {
         ); // quick fix for the distortion at the poles
         this.heightmap_jpg = utils.buffer_to_jpg(this.heightmap);
         this.terrain = texturing.make_terrain(this.heightmap);
-        this.texture = texturing.make_texture(this.terrain);
+        this.texture = texturing.make_texture(this.terrain, this.heightmap);
         this.texture_jpg = utils.buffer_to_jpg(this.texture);
     }
 }

@@ -25,9 +25,9 @@ let utils = {
                 if (typeof pixel == "number") {
                     r = g = b = Math.floor(pixel * COLOR_SCALE);
                 } else {
-                    r = Math.floor(pixel[0] * COLOR_SCALE);
-                    g = Math.floor(pixel[1] * COLOR_SCALE);
-                    b = Math.floor(pixel[2] * COLOR_SCALE);
+                    r = Math.floor(pixel[0]);
+                    g = Math.floor(pixel[1]);
+                    b = Math.floor(pixel[2]);
                 }
 
                 // write image data to canvas
