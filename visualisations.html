@@ -20,27 +20,34 @@
 
 <script>
 
-  let draw_image = function(map) {
+  let draw_image = function(map, caption) {
     let img = document.createElement('img');
     document.body.append(img);
     img.src = utils.buffer_to_jpg(map);
     img.style.height = "400px";
     img.style.width = "400px";
+
+    if (caption !== undefined) img.title = caption;
   }
 
-  let perlin_noise_no_octaves = generator.get_height_map(false, false);
-  let perlin_noise_no_non_lin = generator.get_height_map(true, false);
-  let perlin_noise_final = generator.get_height_map(true, true);
-  draw_image(perlin_noise_no_octaves);
-  draw_image(perlin_noise_no_non_lin);
-  draw_image(perlin_noise_final);
+  let get_texture = function(noise) {
+    return texturing.make_texture(texturing.make_terrain(noise), noise);
+  }
 
-  let texture_no_octaves = texturing.make_texture(texturing.make_terrain(perlin_noise_no_octaves), perlin_noise_no_octaves);
-  let texture_no_non_lin = texturing.make_texture(texturing.make_terrain(perlin_noise_no_non_lin), perlin_noise_no_non_lin);
-  let texture_final = texturing.make_texture(texturing.make_terrain(perlin_noise_final), perlin_noise_final);
-  draw_image(texture_no_octaves);
-  draw_image(texture_no_non_lin);
-  draw_image(texture_final);
+  let perlin_noise_no_octaves = generator.get_height_map(false);
+  let perlin_noise_no_non_lin = generator.get_height_map(true);
+  let perlin_noise_final = generator.get_height_map(true, 3);
+  draw_image(perlin_noise_no_octaves, "No octaves");
+  draw_image(perlin_noise_no_non_lin, "No non-linear function applied");
+  draw_image(perlin_noise_final, "All processing applied");
+
+  draw_image(get_texture(perlin_noise_no_octaves), "No octaves");
+  draw_image(get_texture(perlin_noise_no_non_lin), "No non-linear function applied");
+  draw_image(get_texture(perlin_noise_final), "All processing applied");
+
+  draw_image(get_texture(generator.get_height_map(true, 2)), "Non-linearity with value 2");
+  draw_image(get_texture(generator.get_height_map(true, 3)), "Non-linearity with value 3");
+  draw_image(get_texture(generator.get_height_map(true, 4)), "Non-linearity with value 4");
 
 </script>
 </body>

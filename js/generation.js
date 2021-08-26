@@ -1,17 +1,17 @@
 let generator = {
     SIZE: 8,
-    RESOLUTION: 256, // 1024 for good results
+    RESOLUTION: 200, // 1024 for good results
 
     /*
      * Non-linearity applied to perlin noise for nicer results
      * Essentially makes higher peaks rarer and watery sections more common
      */
-    non_lin: function(x) {
+    non_lin: function(x, steepness) {
         // https://www.desmos.com/calculator/irzyfgi4zk
         // return (x < 0.5) ? 2 * x * x : 2 * x * (x - 1) + 1; // not steep enough
 
         // https://www.desmos.com/calculator/pooairmida
-        let steepness = 3; // increase for steeper curve (better defined land)
+        if (steepness === undefined) steepness = 3; // increase for steeper curve (better defined land)
         return (x < 0.5) ? (Math.tanh(steepness * (2 * x - 1)) + 1) / 2 : x;
     },
 
@@ -53,8 +53,8 @@ let generator = {
 
                 // apply processing to the noise for realism
                 p = this.normalize(p);
-                if (use_non_lin) {
-                    p = this.non_lin(p);
+                if (use_non_lin !== undefined) {
+                    p = this.non_lin(p, use_non_lin);
                 }
 
                 // write noise data
