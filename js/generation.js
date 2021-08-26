@@ -1,6 +1,6 @@
 let generator = {
     SIZE: 8,
-    RESOLUTION: 1024, // 1024 for good results
+    RESOLUTION: 256, // 1024 for good results
 
     /*
      * Non-linearity applied to perlin noise for nicer results
@@ -33,7 +33,7 @@ let generator = {
      * Produces the height map from perlin noise
      * Returns base64 encoded data of the grayscale jpg image representing the heightmap
      */
-    get_height_map: function() {
+    get_height_map: function(use_octaves, use_non_lin) {
         let noise = [];
         let step = this.SIZE / this.RESOLUTION;
 
@@ -44,11 +44,18 @@ let generator = {
             noise[line] = []
             for (let x = 0; x < this.SIZE; x += step) {
                 // get the noise
-                let p = perlin.getWithOctaves(x, y, [1, 0.5, 0.2, 0.1, 0.05, 0.05, 0.01]);
+                let p;
+                if (use_octaves === true) {
+                    p = perlin.getWithOctaves(x, y, [1, 0.5, 0.2, 0.1, 0.05, 0.05, 0.01]);
+                } else {
+                    p = perlin.get(x, y);
+                }
 
                 // apply processing to the noise for realism
                 p = this.normalize(p);
-                p = this.non_lin(p);
+                if (use_non_lin) {
+                    p = this.non_lin(p);
+                }
 
                 // write noise data
                 noise[line][row] = p;

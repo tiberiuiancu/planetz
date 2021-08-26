@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><html>
+<head>
+  <script src='js/perlin.js'></script>
+  <script src='js/utils.js'></script>
+  <script src='js/generation.js'></script>
+  <script src='js/texturing.js'></script>
+  <script src='js/planetz.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+<script>
+
+  let draw_image = function(map) {
+    let img = document.createElement('img');
+    document.body.append(img);
+    img.src = utils.buffer_to_jpg(map);
+    img.style.height = "400px";
+    img.style.width = "400px";
+  }
+
+  let perlin_noise_no_octaves = generator.get_height_map(false, false);
+  let perlin_noise_no_non_lin = generator.get_height_map(true, false);
+  let perlin_noise_final = generator.get_height_map(true, true);
+  draw_image(perlin_noise_no_octaves);
+  draw_image(perlin_noise_no_non_lin);
+  draw_image(perlin_noise_final);
+
+  let texture_no_octaves = texturing.make_texture(texture.make_terrain(perlin_noise_no_octaves), perlin_noise_no_octaves);
+  let texture_no_non_lin = texturing.make_texture(texture.make_terrain(perlin_noise_no_non_lin), perlin_noise_no_non_lin);
+  let texture_final = texturing.make_texture(texture.make_terrain(perlin_noise_final), perlin_noise_final);
+  draw_image(texture_no_octaves);
+  draw_image(texture_no_non_lin);
+  draw_image(texture_final);
+
+</script>
+</body>
+</html>

@@ -30,7 +30,7 @@
   let texture = new THREE.ImageUtils.loadTexture(planetz.texture_jpg);
   let bump_map = new THREE.ImageUtils.loadTexture(planetz.heightmap_jpg);
   var geometry = new THREE.SphereGeometry(0.5, 1000, 1000);
-  var material = new THREE.MeshStandardMaterial( { map: texture, bumpMap: bump_map, bumpScale: 0.01 });
+  var material = new THREE.MeshStandardMaterial( { map: texture, bumpMap: bump_map, bumpScale: 0.015 });
   var earthMesh = new THREE.Mesh(geometry, material);
   scene.add(light);
   scene.add(earthMesh);
