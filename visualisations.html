@@ -35,9 +35,9 @@
   draw_image(perlin_noise_no_non_lin);
   draw_image(perlin_noise_final);
 
-  let texture_no_octaves = texturing.make_texture(texture.make_terrain(perlin_noise_no_octaves), perlin_noise_no_octaves);
-  let texture_no_non_lin = texturing.make_texture(texture.make_terrain(perlin_noise_no_non_lin), perlin_noise_no_non_lin);
-  let texture_final = texturing.make_texture(texture.make_terrain(perlin_noise_final), perlin_noise_final);
+  let texture_no_octaves = texturing.make_texture(texturing.make_terrain(perlin_noise_no_octaves), perlin_noise_no_octaves);
+  let texture_no_non_lin = texturing.make_texture(texturing.make_terrain(perlin_noise_no_non_lin), perlin_noise_no_non_lin);
+  let texture_final = texturing.make_texture(texturing.make_terrain(perlin_noise_final), perlin_noise_final);
   draw_image(texture_no_octaves);
   draw_image(texture_no_non_lin);
   draw_image(texture_final);
